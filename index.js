@@ -9,9 +9,11 @@ import morgan from "morgan";
 //route
 import authRoute from './routes/auth.js'
 import adminRoute from './routes/authorize.js'
+import categoryRoutes from "./routes/category.js"
 //error handle
 import { errorHandler } from './middleware/globalError.js'
 import { notfound } from "./middleware/notfound.js";
+
 const app = express();
 dotenv.config();
 app.use(helmet());
@@ -26,7 +28,7 @@ mongoose.connect(process.env.MONGO_URI).then(() => console.log("mongodb connecte
 
 app.use("/auth",authRoute)
 app.use("/dashboard", adminRoute)
-
+app.use("/Category",categoryRoutes)
 
 app.use(notfound)           
 app.use(errorHandler)
