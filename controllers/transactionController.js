@@ -106,3 +106,60 @@ export const deleteTransaction = async (req, res, next) => {
         next(error);
     }
 };
+export const monthlySummary = async (req, res, next) => {
+    try {
+        const { month } = req.query;
+
+        // 1. check the format YYYY-MM
+        if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month || "")) {
+            return res
+                .status(400)
+                .json({ message: "month is required, format YYYY-MM" });
+        }
+
+        // 2. date range: first day of month → first day of next month
+        const [year, m] = month.split("-").map(Number);
+        const start = new Date(Date.UTC(year, m - 1, 1));
+        const end = new Date(Date.UTC(year, m, 1));
+
+        // 3. aggregation: filter, then group
+        const rows = await Transaction.aggregate([
+            { $match: { user: req.user._id, date: { $gte: start, $lt: end } } },
+            {
+                $group: {
+                    _id: { category: "$category", type: "$type" },
+                    total: { $sum: "$amount" },
+                    count: { $sum: 1 },
+                },
+            },
+            { $sort: { total: -1 } },
+        ]);
+
+        // 4. flatten the result
+        const byCategory = rows.map((r) => ({
+            category: r._id.category,
+            type: r._id.type,
+            total: r.total,
+            count: r.count,
+        }));
+
+        // 5. totals
+        const sum = (type) =>
+            byCategory
+                .filter((r) => r.type === type)
+                .reduce((acc, r) => acc + r.total, 0);
+
+        const totalIncome = sum("income");
+        const totalExpense = sum("expense");
+
+        res.json({
+            month,
+            totalIncome,
+            totalExpense,
+            balance: totalIncome - totalExpense,
+            byCategory,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
