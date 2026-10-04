@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
+import "dotenv/config";                        // first line
 
 import helmet from "helmet";
 import cors from "cors";
@@ -17,11 +17,19 @@ import adminRoute from "./routes/admin.js"
 import { errorHandler } from './middleware/globalError.js'
 import { notfound } from "./middleware/notfound.js";
 
+//security API
+import { limiter } from "./middleware/rateLimiter.js"
+
 const app = express();
-dotenv.config();
 app.use(helmet());
-app.use(cors());
-app.use(morgan("dev"))
+app.use(cors({
+    origin: ["http://localhost:5000"],
+
+}));
+if (process.env.NODE_ENV === "development") {
+    app.use(morgan("dev"));
+}
+app.use(limiter);
 app.use(express.json());
 
 
