@@ -14,7 +14,8 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
-
+  profilePicture: { type: String, default: "" },
+  profilePictureHash: { type: String, default: "" },
 });
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
