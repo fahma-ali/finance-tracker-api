@@ -8,10 +8,11 @@ import morgan from "morgan";
 
 //route
 import authRoute from './routes/auth.js'
-import adminRoute from './routes/authorize.js'
+import dashboardRoute from './routes/authorize.js'
 import categoryRoutes from "./routes/category.js"
 import transactionRoute from "./routes/transaction.js"
 import uploadRoute from "./routes/upload.js"
+import adminRoute from "./routes/admin.js"
 //error handle
 import { errorHandler } from './middleware/globalError.js'
 import { notfound } from "./middleware/notfound.js";
@@ -29,10 +30,11 @@ morgan("dev")
 mongoose.connect(process.env.MONGO_URI).then(() => console.log("mongodb connected")).catch((err) => console.log("not connected mongodb", err))
 
 app.use("/auth",authRoute)
-app.use("/dashboard", adminRoute)
+app.use("/dashboard", dashboardRoute)
 app.use("/Category",categoryRoutes)
 app.use("/Transaction", transactionRoute)
 app.use("/Upload", uploadRoute)
+app.use("/Admin", adminRoute)
 
 app.use(notfound)           
 app.use(errorHandler)
