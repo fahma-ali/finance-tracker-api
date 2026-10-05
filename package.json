@@ -4,7 +4,8 @@
   "description": "RESTful Personal Finance Tracker API: JWT auth, transactions, categories, monthly summaries, image upload, and Swagger docs.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "seed": "node seed/seedCategories.js"
   },
   "repository": {

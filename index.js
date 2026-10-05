@@ -8,7 +8,6 @@ import morgan from "morgan";
 
 //route
 import authRoute from './routes/auth.js'
-import dashboardRoute from './routes/authorize.js'
 import categoryRoutes from "./routes/category.js"
 import transactionRoute from "./routes/transaction.js"
 import uploadRoute from "./routes/upload.js"
@@ -29,24 +28,21 @@ app.use(cors({
     origin: ["http://localhost:5000"],
 
 }));
-if (process.env.NODE_ENV === "development") {
-    app.use(morgan("dev"));
-}
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
+
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(limiter);
 app.use(express.json());
 
 
 const port = process.env.PORT;
-morgan("dev")
-mongoose.connect(process.env.MONGO_URI).then(() => console.log("mongodb connected")).catch((err) => console.log("not connected mongodb", err))
+mongoose.connect(process.env.NODE_ENV === "production" ? process.env.MONGO_URI_PRO : process.env.MONGO_URI_DEV).then(() => console.log("mongodb connected")).catch((err) => console.log("not connected mongodb", err))
 
 app.use("/auth",authRoute)
-app.use("/dashboard", dashboardRoute)
 app.use("/categories",categoryRoutes)
 app.use("/transactions", transactionRoute)
-app.use("/Upload", uploadRoute)
-app.use("/Admin", adminRoute)
+app.use("/upload", uploadRoute)
+app.use("/admin", adminRoute)
 
 app.use(notfound)           
 app.use(errorHandler)

@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import Category from "../models/category.js";
-
+import dns from "node:dns";
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 dotenv.config();
 
 const categories = [
@@ -19,7 +20,9 @@ const categories = [
 
 const seed = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect(process.env.NODE_ENV === "production" ? process.env.MONGO_URI_PRO : process.env.MONGO_URI_DEV);
+        console.log("Seeding host:", mongoose.connection.host);
+        console.log("Seeding database:", mongoose.connection.name);
         await Category.deleteMany();
         await Category.insertMany(categories);
         console.log("Seeded");
