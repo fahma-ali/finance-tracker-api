@@ -1,5 +1,7 @@
 import swaggerJSDoc from "swagger-jsdoc";
-
+const renderUrl = "https://finance-tracker-api-o7l0.onrender.com";
+const localUrl = "http://localhost:5000";
+const isProd = process.env.NODE_ENV === "production";
 const options = {
   definition: {
     openapi: "3.0.0",
@@ -10,7 +12,12 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:5000",
+        url: isProd ? renderUrl : localUrl,
+        description: isProd ? "Production (Render)" : "Local development",
+      },
+      {
+        url: isProd ? localUrl : renderUrl,
+        description: isProd ? "Local development" : "Production (Render)",
       },
     ],
     tags: [
