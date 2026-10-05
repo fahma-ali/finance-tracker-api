@@ -19,6 +19,9 @@ import { notfound } from "./middleware/notfound.js";
 
 //security API
 import { limiter } from "./middleware/rateLimiter.js"
+//swagger
+import swaggerUi from "swagger-ui-express";
+import {swaggerSpec} from "./utils/swagger.js";
 
 const app = express();
 app.use(helmet());
@@ -29,6 +32,7 @@ app.use(cors({
 if (process.env.NODE_ENV === "development") {
     app.use(morgan("dev"));
 }
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(limiter);
 app.use(express.json());
 
@@ -39,8 +43,8 @@ mongoose.connect(process.env.MONGO_URI).then(() => console.log("mongodb connecte
 
 app.use("/auth",authRoute)
 app.use("/dashboard", dashboardRoute)
-app.use("/Category",categoryRoutes)
-app.use("/Transaction", transactionRoute)
+app.use("/categories",categoryRoutes)
+app.use("/transactions", transactionRoute)
 app.use("/Upload", uploadRoute)
 app.use("/Admin", adminRoute)
 
