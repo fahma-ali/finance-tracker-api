@@ -3,7 +3,8 @@
 A RESTful backend for tracking income and expenses, with JWT authentication, categories, monthly summaries, profile picture upload, and an admin overview.
 
 **Live API docs (Swagger):** https://finance-tracker-api-o7l0.onrender.com/docs
-**Demo video:** <Loom link>
+
+**Demo video:** https://www.loom.com/share/aee5d00b823743b7890d7d1d2798145f
 
 > Hosted on Render's free plan, so the first request after inactivity can take about 50 seconds.
 
